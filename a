@@ -1,0 +1,52 @@
+local module_upvr_2 = {}
+
+local Players_upvr = game:GetService("Players")
+
+-- Populate module_upvr and module_3_upvr tables
+local function populate_tables()
+    local module_upvr = {}
+    local module_3_upvr = {}
+    for i = 0, 255 do
+        local string_char_result1 = string.char(i)
+        local utf8_char_result1 = utf8.char(i + 917504)
+        module_upvr[string_char_result1] = utf8_char_result1
+        module_3_upvr[utf8_char_result1] = string_char_result1
+    end
+    return module_upvr, module_3_upvr
+end
+
+local module_upvr, module_3_upvr = populate_tables()
+
+-- Encode function
+function module_upvr_2.Encode(arg1)
+    return string.gsub(arg1, '.', module_upvr)
+end
+
+-- Encrypt function
+function module_upvr_2.Encrypt(arg1, arg2)
+    if not arg1 then
+        return 1
+    end
+    if not arg2 then
+        return 1
+    end
+
+    local var38
+    local LocalPlayer = Players_upvr.LocalPlayer
+
+    if arg2 == "FrogWasHere" then
+        var38 = string.format("%s-%d-%d", LocalPlayer.Name, LocalPlayer.UserId * 2, LocalPlayer.UserId + os.date("%Y") + os.date("%j"))
+    end
+
+    local module_2 = {}
+    local tbl = {string.byte(string.format("%s-%d-%d", LocalPlayer.Name, LocalPlayer.UserId * 2, (LocalPlayer.UserId + os.date("%Y")) * 2), 1, -1)}
+    local tbl_2 = {string.byte(arg1, 1, -1)}
+
+    for i_4 = 1, #tbl_2 do
+        table.insert(module_2, string.char(bit32.bxor(tbl_2[i_4], tbl[i_4 % #tbl + 1])))
+    end
+
+    return module_upvr_2.Encode(table.concat(module_2)), var38
+end
+
+return module_upvr_2
